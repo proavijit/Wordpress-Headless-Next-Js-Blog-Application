@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import BlogSection from "@/components/BlogSection";
 import HeroSection from "@/components/HeroSection";
@@ -28,14 +29,15 @@ export default async function Home() {
       {/* Editor Picks Section */}
       {editorPicks.length > 0 && (
         <Reveal>
-          <section className="border-b border-soft/50 bg-paper px-6 py-16 sm:px-8 lg:px-10">
+          <section className="relative border-b border-soft/50 bg-paper px-6 py-16 sm:px-8 lg:px-10">
+            <div className="absolute left-0 top-0 h-px w-24 bg-gradient-to-r from-accent/40 to-transparent" />
             <div className="mx-auto max-w-7xl">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <svg aria-hidden="true" className="h-4 w-4 text-accent" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24"><path d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.36-6.36-1.42 1.42M7.06 16.94l-1.42 1.42m12.72 0-1.42-1.42M7.06 7.06 5.64 5.64"/></svg>
-                  <h2 className="text-sm font-medium text-ink">Editor&apos;s Picks</h2>
+              <div className="flex items-end justify-between border-b border-soft/20 pb-4">
+                <div>
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-accent/50">Curated for you</span>
+                  <h2 className="mt-1 text-lg font-medium text-ink">Editor&apos;s Picks</h2>
                 </div>
-                <Link href="/blog" className="inline-flex items-center gap-1 text-xs font-medium text-muted transition-colors hover:text-accent">
+                <Link href="/blog" className="inline-flex items-center gap-1 text-xs font-medium text-muted/60 transition-colors hover:text-accent">
                   View all <svg aria-hidden="true" className="h-3 w-3" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
                 </Link>
               </div>
@@ -51,24 +53,41 @@ export default async function Home() {
         </Reveal>
       )}
 
-      {/* Trending Section with Sidebar Layout */}
+      {/* Trending Section */}
       <Reveal>
         <section className="border-b border-soft/50 bg-paper px-6 py-16 sm:px-8 lg:px-10">
           <div className="mx-auto max-w-7xl">
-            <div className="flex items-center gap-2 mb-6">
+            <div className="flex items-center gap-2 mb-8">
               <svg aria-hidden="true" className="h-4 w-4 text-accent" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
               <h2 className="text-sm font-medium text-ink">Trending Now</h2>
             </div>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {trending.slice(0, 4).map((post, i) => (
-                <Link key={post.slug} href={`/blog/${post.slug}`} className="group">
-                  <div className="rounded-sm border border-soft/40 bg-card/40 p-5 transition-all duration-normal hover:border-accent/20 hover:bg-card hover:shadow-sm">
-                    <span className="text-2xl font-light text-accent/20 tabular-nums">0{i + 1}</span>
-                    <h3 className="mt-3 text-sm font-medium leading-snug text-ink line-clamp-2 transition-colors group-hover:text-accent">{post.title}</h3>
-                    <p className="mt-2 text-xs text-muted">{post.readingTime?.replace(" min read", "m")}</p>
-                  </div>
-                </Link>
-              ))}
+            <div className="grid gap-3 sm:grid-cols-2">
+              {trending.slice(0, 4).map((post, i) => {
+                const image = post.featuredImage?.node;
+                const initials = post.author.node.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+                const category = post.categories.nodes[0];
+                return (
+                  <Link key={post.slug} href={`/blog/${post.slug}`} className="group">
+                    <article className="flex items-center gap-4 rounded-sm border border-soft/20 bg-card/30 p-4 transition-all duration-normal hover:border-accent/20 hover:bg-card hover:shadow-sm">
+                      <span className="text-3xl font-bold text-accent/20 tabular-nums leading-none transition-colors group-hover:text-accent/30">{String(i + 1).padStart(2, "0")}</span>
+                      <div className="relative w-14 shrink-0 overflow-hidden rounded-xs bg-accent/5 aspect-square sm:w-16">
+                        {image ? (
+                          <Image src={image.sourceUrl} alt={image.altText} fill className="object-cover transition duration-slow group-hover:scale-[1.08]" sizes="64px" />
+                        ) : (
+                          <div className="flex h-full items-center justify-center text-xs font-light text-accent/15">{initials}</div>
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        {category && (
+                          <span className="text-[10px] font-semibold uppercase tracking-widest text-accent/70">{category.name}</span>
+                        )}
+                        <h3 className="mt-0.5 text-sm font-medium leading-snug text-ink line-clamp-2 transition-colors group-hover:text-accent">{post.title}</h3>
+                        <p className="mt-1 text-[11px] text-muted/60">{post.readingTime?.replace(" min read", "m")}</p>
+                      </div>
+                    </article>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </section>

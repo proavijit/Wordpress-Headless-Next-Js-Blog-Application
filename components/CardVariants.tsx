@@ -97,23 +97,33 @@ export default function CardVariants({ post, variant = "default", priority = fal
 
     case "editorial":
       return (
-        <article className="group relative overflow-hidden rounded-sm bg-gradient-to-br from-accent/[0.02] to-transparent border border-soft/50 transition-all duration-normal hover:border-accent/20 hover:shadow-md">
-          <Link href={`/blog/${post.slug}`} className="block p-6">
-            <div className="flex items-center gap-2 text-xs text-muted">
-              {category && <span className="rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-medium text-accent">{category.name}</span>}
-              <span aria-hidden="true">·</span>
-              <time dateTime={post.date}>{new Date(post.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</time>
+        <article className="group relative flex overflow-hidden rounded-sm border border-soft/20 bg-card/50 transition-all duration-normal hover:border-accent/20 hover:shadow-lg hover:shadow-accent/5">
+          <div className="absolute -inset-y-1/4 -right-8 w-48 rounded-full bg-accent/[0.02] transition-all duration-slow group-hover:scale-[1.4] group-hover:bg-accent/[0.04] pointer-events-none" />
+          <div className="absolute bottom-0 right-0 h-12 w-12 rounded-tl-full bg-accent/[0.015] pointer-events-none" />
+          <Link href={`/blog/${post.slug}`} className="flex w-full">
+            <div className="relative w-[45%] shrink-0 overflow-hidden bg-accent/5 [clip-path:inset(0_8px_0_0)]">
+              <div className="absolute inset-0 z-10 bg-gradient-to-r from-transparent via-transparent to-accent/[0.04]" />
+              {image ? (
+                <Image src={image.sourceUrl} alt={image.altText} fill className="object-cover transition duration-slow group-hover:scale-[1.05]" sizes="40vw" />
+              ) : (
+                <div className="flex h-full items-center justify-center"><span className="text-2xl font-light text-accent/20">{initials}</span></div>
+              )}
             </div>
-            <h3 className="mt-4 text-xl font-medium leading-snug text-ink transition-colors group-hover:text-accent">{post.title}</h3>
-            <div className="mt-3 text-sm leading-7 text-muted empty:hidden" dangerouslySetInnerHTML={{ __html: post.excerpt || "" }} />
-            <div className="mt-6 flex items-center justify-between">
-              <div className="flex items-center gap-3 text-xs text-muted">
-                <div className="h-6 w-6 rounded-full bg-accent/15 grid place-items-center text-[10px] font-medium text-accent">{initials}</div>
-                <span className="font-medium text-ink">{post.author.node.name}</span>
+            <div className="flex flex-1 flex-col justify-center gap-[3px] py-5 pr-6 pl-5">
+              <div className="flex items-center gap-2.5">
+                {category && (
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-accent/60">{category.name}</span>
+                )}
+                <div className="h-px flex-1 bg-accent/10" />
+              </div>
+              <h3 className="text-lg font-medium leading-snug text-ink transition-colors group-hover:text-accent line-clamp-2">{post.title}</h3>
+              <div className="mt-1 flex items-center gap-2 text-[11px] text-muted/50">
+                <span className="font-medium text-muted/70">{post.author.node.name}</span>
+                <span aria-hidden="true">·</span>
+                <time dateTime={post.date}>{new Date(post.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</time>
                 <span aria-hidden="true">·</span>
                 <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" />{post.readingTime?.replace(" min read", "m")}</span>
               </div>
-              <ArrowUpRight className="h-4 w-4 text-muted/30 transition-colors group-hover:text-accent" />
             </div>
           </Link>
         </article>

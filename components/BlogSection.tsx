@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useMemo, useSyncExternalStore } from "react";
+import { useCallback, useMemo, useSyncExternalStore, useState, useEffect } from "react";
 import type { WPCardPost, Tag } from "@/types/blog";
 import BlogCard from "./BlogCard";
 import TagFilter from "./TagFilter";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type BlogSectionProps = {
   posts: WPCardPost[];
@@ -28,6 +29,12 @@ export default function BlogSection({ posts, tags }: BlogSectionProps) {
   const urlTag = useSyncExternalStore(subscribeToUrlChanges, getUrlTag, () => "All");
   const tagNames = ["All", ...tags.map((t) => t.name)];
   const activeTag = tagNames.includes(urlTag) ? urlTag : "All";
+  const postsPerPage = 9;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTag]);
 
   const filteredPosts = useMemo(() => {
     if (activeTag === "All") return posts;
@@ -35,6 +42,18 @@ export default function BlogSection({ posts, tags }: BlogSectionProps) {
       post.tags.nodes.some((t) => t.name === activeTag),
     );
   }, [activeTag, posts]);
+
+  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+
+  const paginatedPosts = useMemo(() => {
+    const start = (currentPage - 1) * postsPerPage;
+    return filteredPosts.slice(start, start + postsPerPage);
+  }, [filteredPosts, currentPage, postsPerPage]);
+
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page);
+    document.getElementById("blog")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
 
   const handleTagChange = useCallback((tag: string) => {
     const url = new URL(window.location.href);
@@ -76,13 +95,53 @@ export default function BlogSection({ posts, tags }: BlogSectionProps) {
           <TagFilter tags={tagNames} activeTag={activeTag} onChange={handleTagChange} />
         </div>
 
-        <div className="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {filteredPosts.map((post, index) => (
-            <BlogCard key={post.databaseId} post={post} priority={index === 0} />
-          ))}
-        </div>
+        {filteredPosts.length > 0 ? (
+          <>
+            <div className="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {paginatedPosts.map((post, index) => (
+                <BlogCard key={post.databaseId} post={post} priority={index === 0} />
+              ))}
+            </div>
 
-        {filteredPosts.length === 0 && (
+            {totalPages > 1 && (
+              <nav className="mt-12 flex items-center justify-center gap-1.5" aria-label="Pagination">
+                <button
+                  type="button"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage <= 1}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-xs text-xs text-muted transition-colors hover:bg-accent/10 hover:text-accent disabled:pointer-events-none disabled:opacity-30"
+                  aria-label="Previous page"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    type="button"
+                    onClick={() => handlePageChange(page)}
+                    className={`inline-flex h-9 w-9 items-center justify-center rounded-xs text-xs font-medium transition-colors ${
+                      page === currentPage
+                        ? "bg-accent text-white shadow-xs"
+                        : "text-muted hover:bg-accent/10 hover:text-accent"
+                    }`}
+                    aria-current={page === currentPage ? "page" : undefined}
+                  >
+                    {page}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage >= totalPages}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-xs text-xs text-muted transition-colors hover:bg-accent/10 hover:text-accent disabled:pointer-events-none disabled:opacity-30"
+                  aria-label="Next page"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </nav>
+            )}
+          </>
+        ) : (
           <p className="mt-16 text-center text-sm text-muted">
             No articles found for this topic.
           </p>
