@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" role="img" aria-labelledby="title desc">
+  <title id="title">TypeScript toolkit illustration</title>
+  <desc id="desc">Code editor cards with TypeScript symbols.</desc>
+  <rect width="900" height="520" fill="#164e63"/>
+  <rect x="92" y="86" width="716" height="348" rx="26" fill="#ecfeff"/>
+  <rect x="92" y="86" width="716" height="56" rx="26" fill="#0e7490"/>
+  <circle cx="136" cy="114" r="9" fill="#f97316"/>
+  <circle cx="166" cy="114" r="9" fill="#facc15"/>
+  <circle cx="196" cy="114" r="9" fill="#22c55e"/>
+  <rect x="142" y="184" width="168" height="194" rx="18" fill="#0f172a"/>
+  <rect x="346" y="184" width="412" height="34" rx="17" fill="#a5f3fc"/>
+  <rect x="346" y="244" width="325" height="24" rx="12" fill="#cbd5e1"/>
+  <rect x="346" y="294" width="370" height="24" rx="12" fill="#cbd5e1"/>
+  <rect x="346" y="344" width="260" height="24" rx="12" fill="#cbd5e1"/>
+  <text x="182" y="304" fill="#67e8f9" font-family="Arial, Helvetica, sans-serif" font-size="92" font-weight="700">TS</text>
+</svg>

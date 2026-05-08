@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" role="img" aria-labelledby="title desc">
+  <title id="title">Clean dashboard illustration</title>
+  <desc id="desc">Dashboard cards with charts and status indicators.</desc>
+  <rect width="900" height="520" fill="#f8fafc"/>
+  <rect x="94" y="78" width="712" height="364" rx="28" fill="#0f172a"/>
+  <rect x="138" y="126" width="188" height="116" rx="18" fill="#f8fafc"/>
+  <rect x="356" y="126" width="188" height="116" rx="18" fill="#ccfbf1"/>
+  <rect x="574" y="126" width="188" height="116" rx="18" fill="#fde68a"/>
+  <rect x="138" y="278" width="406" height="112" rx="18" fill="#1f2937"/>
+  <rect x="574" y="278" width="188" height="112" rx="18" fill="#f8fafc"/>
+  <path d="M176 356l56-38 64 24 76-54 92 42" stroke="#5eead4" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M620 348h96M620 318h62" stroke="#0f172a" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="220" cy="184" r="34" fill="#14b8a6"/>
+  <circle cx="450" cy="184" r="34" fill="#0f766e"/>
+</svg>

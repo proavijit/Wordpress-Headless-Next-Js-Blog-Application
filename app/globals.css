@@ -1,0 +1,106 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --ink: #474642;
+  --paper: #fcf7f1;
+  --accent: #dcac96;
+  --accent-hover: #c39078;
+  --muted-text: #444444;
+  --card-bg: #ffffff;
+  --coal: #000000;
+  --border-subtle: rgba(68, 68, 68, 0.08);
+  --border-accent: rgba(220, 172, 150, 0.3);
+}
+
+.dark {
+  --ink: #e8e4df;
+  --paper: #1c1a18;
+  --accent: #dcac96;
+  --accent-hover: #e8c4b0;
+  --muted-text: #a8a39e;
+  --card-bg: #2a2723;
+  --coal: #ffffff;
+  --border-subtle: rgba(232, 228, 223, 0.08);
+  --border-accent: rgba(220, 172, 150, 0.2);
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-muted: var(--muted-text);
+  --color-card: var(--card-bg);
+  --color-coal: var(--coal);
+  --color-soft: var(--border-subtle);
+  --color-border-accent: var(--border-accent);
+
+  --font-sans: var(--font-poppins), "Poppins", sans-serif;
+  --font-mono: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+
+  --text-xs: 11.39px;
+  --text-sm: 11.93px;
+  --text-base: 16px/27.2px;
+  --text-lg: 17.36px;
+  --text-xl: 22px/1.4;
+  --text-2xl: 28px/1.3;
+  --text-3xl: 36px/1.2;
+  --text-4xl: 44px/1.1;
+  --text-5xl: 52px/1.05;
+  --text-display: 64px/1;
+
+  --radius-xs: 8px;
+  --radius-sm: 16px;
+  --radius-md: 20px;
+
+  --duration-instant: 100ms;
+  --duration-fast: 140ms;
+  --duration-normal: 170ms;
+  --duration-slow: 1000ms;
+}
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-poppins), "Poppins", sans-serif;
+  font-weight: 400;
+}
+
+::selection {
+  background-color: var(--accent);
+  color: var(--coal);
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.55s ease both;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(220,172,150,0.08) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}

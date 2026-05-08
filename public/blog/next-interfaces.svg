@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" role="img" aria-labelledby="title desc">
+  <title id="title">Next.js interface illustration</title>
+  <desc id="desc">Layered web application windows with routing paths.</desc>
+  <rect width="900" height="520" fill="#ecfeff"/>
+  <rect x="146" y="104" width="560" height="292" rx="26" fill="#0f172a"/>
+  <rect x="194" y="150" width="560" height="292" rx="26" fill="#ffffff"/>
+  <rect x="194" y="150" width="560" height="58" rx="26" fill="#14b8a6"/>
+  <rect x="248" y="252" width="150" height="126" rx="18" fill="#e2e8f0"/>
+  <rect x="434" y="252" width="266" height="34" rx="17" fill="#0f172a"/>
+  <rect x="434" y="314" width="214" height="24" rx="12" fill="#cbd5e1"/>
+  <rect x="434" y="360" width="178" height="24" rx="12" fill="#cbd5e1"/>
+  <path d="M252 180h86M370 180h78M480 180h120" stroke="#f8fafc" stroke-width="10" stroke-linecap="round"/>
+</svg>

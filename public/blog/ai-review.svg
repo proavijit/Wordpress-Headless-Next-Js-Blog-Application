@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" role="img" aria-labelledby="title desc">
+  <title id="title">AI code review illustration</title>
+  <desc id="desc">Pull request review screen with AI annotations.</desc>
+  <rect width="900" height="520" fill="#111827"/>
+  <rect x="112" y="74" width="676" height="372" rx="28" fill="#f8fafc"/>
+  <rect x="150" y="124" width="286" height="34" rx="17" fill="#0f172a"/>
+  <rect x="150" y="194" width="390" height="22" rx="11" fill="#cbd5e1"/>
+  <rect x="150" y="240" width="330" height="22" rx="11" fill="#cbd5e1"/>
+  <rect x="150" y="286" width="370" height="22" rx="11" fill="#cbd5e1"/>
+  <rect x="150" y="332" width="260" height="22" rx="11" fill="#cbd5e1"/>
+  <rect x="572" y="174" width="166" height="176" rx="20" fill="#14b8a6"/>
+  <circle cx="625" cy="230" r="26" fill="#f8fafc"/>
+  <path d="M606 294h98M606 324h62" stroke="#f8fafc" stroke-width="12" stroke-linecap="round"/>
+  <path d="M544 252h28" stroke="#14b8a6" stroke-width="8" stroke-linecap="round"/>
+</svg>
