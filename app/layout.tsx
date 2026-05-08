@@ -59,7 +59,15 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       className={`${poppins.variable} h-full scroll-smooth antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-paper text-ink font-sans" suppressHydrationWarning>
+      <body
+        className="flex min-h-full flex-col bg-paper text-ink font-sans"
+        suppressHydrationWarning
+      >
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var e=JSON.parse(localStorage.getItem("sn-store")||"{}");if(e&&e.state&&e.state.theme==="dark"){document.documentElement.classList.add("dark")}else{document.documentElement.classList.remove("dark")}}catch(e){document.documentElement.classList.remove("dark")}})()`,
+          }}
+        />
         <SkipLink />
         <ApolloWrapper>
           <QueryProvider>

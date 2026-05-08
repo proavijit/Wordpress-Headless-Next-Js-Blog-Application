@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
-import { Sun, Moon, Menu, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Sun, Moon, Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import CommandPalette from "./CommandPalette";
+import { useStore } from "@/lib/store";
 
 type NavLink = { label: string; href: string };
+type CategoryLink = { name: string; slug: string; count?: number };
 
 const defaultNavLinks: NavLink[] = [
   { label: "Home", href: "/" },
@@ -14,27 +16,26 @@ const defaultNavLinks: NavLink[] = [
   { label: "Search", href: "/search" },
 ];
 
-export default function Header({ navLinks = defaultNavLinks }: { navLinks?: NavLink[] }) {
+export default function Header({
+  navLinks = defaultNavLinks,
+  categories = [],
+}: {
+  navLinks?: NavLink[];
+  categories?: CategoryLink[];
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [catOpen, setCatOpen] = useState(false);
+  const [mobileCatOpen, setMobileCatOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const theme = useStore((s) => s.theme);
+  const toggleTheme = useStore((s) => s.toggleTheme);
 
   useEffect(() => {
     setMounted(true);
-    const stored = window.localStorage.getItem("sn-store");
-    let isDark = false;
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        isDark = parsed?.state?.theme === "dark";
-      } catch {}
-    } else {
-      isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    }
-    setDarkMode(isDark);
-    document.documentElement.classList.toggle("dark", isDark);
-  }, [setDarkMode]);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -42,14 +43,21 @@ export default function Header({ navLinks = defaultNavLinks }: { navLinks?: NavL
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  useEffect(() => {
+    if (!catOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setCatOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [catOpen]);
 
-  const toggleTheme = useCallback(() => {
-    const next = !darkMode;
-    setDarkMode(next);
-    document.documentElement.classList.toggle("dark", next);
-    window.localStorage.setItem("theme", next ? "dark" : "light");
-  }, [darkMode]);
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false);
+    setMobileCatOpen(false);
+  }, []);
 
   return (
     <header
@@ -84,6 +92,53 @@ export default function Header({ navLinks = defaultNavLinks }: { navLinks?: NavL
               {link.label}
             </Link>
           ))}
+          {categories.length > 0 && (
+            <div ref={dropdownRef} className="relative">
+              <button
+                type="button"
+                onClick={() => setCatOpen((c) => !c)}
+                onMouseEnter={() => setCatOpen(true)}
+                className="flex items-center gap-1 text-sm font-normal text-muted transition duration-fast hover:text-ink"
+              >
+                Categories
+                <ChevronDown
+                  className={`h-3.5 w-3.5 transition-transform duration-fast ${
+                    catOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              <AnimatePresence>
+                {catOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.12 }}
+                    onMouseLeave={() => setCatOpen(false)}
+                    className="absolute left-1/2 top-full mt-2 w-48 -translate-x-1/2 rounded-xs border border-soft bg-paper shadow-lg"
+                  >
+                    <div className="py-2">
+                          {categories.map((cat) => (
+                        <Link
+                          key={cat.slug}
+                          href={`/category/${cat.slug}`}
+                          onClick={() => setCatOpen(false)}
+                          className="flex items-center justify-between px-4 py-2 text-sm text-muted transition duration-fast hover:text-ink hover:bg-soft"
+                        >
+                          <span>{cat.name}</span>
+                          {cat.count != null && (
+                            <span className="rounded-xs bg-soft px-1.5 py-0.5 text-xs tabular-nums text-muted">
+                              {cat.count}
+                            </span>
+                          )}
+                        </Link>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-1">
@@ -92,9 +147,9 @@ export default function Header({ navLinks = defaultNavLinks }: { navLinks?: NavL
             type="button"
             onClick={toggleTheme}
             className="grid h-9 w-9 place-items-center rounded-xs text-muted transition duration-fast hover:text-ink hover:bg-soft focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent/50"
-            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
           >
-            {mounted && (darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />)}
+            {mounted && (theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />)}
           </button>
           <button
             type="button"
@@ -130,6 +185,51 @@ export default function Header({ navLinks = defaultNavLinks }: { navLinks?: NavL
                   {link.label}
                 </Link>
               ))}
+              {categories.length > 0 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setMobileCatOpen((c) => !c)}
+                    className="flex w-full items-center justify-between rounded-xs px-3 py-3 text-sm font-normal text-muted transition duration-fast hover:text-ink hover:bg-soft"
+                  >
+                    Categories
+                    <ChevronDown
+                      className={`h-3.5 w-3.5 transition-transform duration-fast ${
+                        mobileCatOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+                  <AnimatePresence>
+                    {mobileCatOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="ml-4 border-l border-soft pl-2">
+                          {categories.map((cat) => (
+                            <Link
+                              key={cat.slug}
+                              href={`/category/${cat.slug}`}
+                              onClick={closeMenu}
+                              className="flex items-center justify-between rounded-xs px-3 py-2 text-sm text-muted transition duration-fast hover:text-ink hover:bg-soft"
+                            >
+                              <span>{cat.name}</span>
+                              {cat.count != null && (
+                                <span className="rounded-xs bg-soft px-1.5 py-0.5 text-xs tabular-nums text-muted">
+                                  {cat.count}
+                                </span>
+                              )}
+                            </Link>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </>
+              )}
             </div>
           </motion.div>
         )}
