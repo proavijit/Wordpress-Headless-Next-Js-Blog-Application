@@ -1,20 +1,13 @@
-import { getMenus, getAllCategories } from "@/lib/posts";
+import { getMenus } from "@/lib/posts";
 import Header from "./Header";
-import type { Category } from "@/types/blog";
 
 type NavLink = { label: string; href: string };
 
 export default async function HeaderWrapper() {
   let navLinks: NavLink[] = [];
-  let categories: Category[] = [];
 
   try {
-    const [menus, cats] = await Promise.all([
-      getMenus(),
-      getAllCategories(),
-    ]);
-    categories = cats;
-
+    const menus = await getMenus();
     const primaryMenu = menus.find((m) => m.name.toLowerCase() === "primary");
     if (primaryMenu) {
       navLinks = primaryMenu.menuItems.nodes.map((item) => {
@@ -25,13 +18,8 @@ export default async function HeaderWrapper() {
       });
     }
   } catch {
-    // fall back to default
+    // fall back to default nav links
   }
 
-  return (
-    <Header
-      navLinks={navLinks.length > 0 ? navLinks : undefined}
-      categories={categories}
-    />
-  );
+  return <Header navLinks={navLinks.length > 0 ? navLinks : undefined} />;
 }
